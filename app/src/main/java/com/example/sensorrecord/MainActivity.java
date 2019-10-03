@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity
     //App flags
     public static Boolean dataRecordStarted;
     public static Boolean dataRecordCompleted;
-    public static Boolean heightUnitSpinnerTouched;
-    public static Boolean subCreated;
+    public static Boolean deviceSpinnerTouched;
     public Logger logger;
     NavigationView navigationView;
     Menu optionsMenu;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     ActionBarDrawerToggle hamburger;
     FragmentManager fragmentManager;
     SensorManager mSensorManager;
-    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +74,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.nav_start).setEnabled(false);
         navigationView.getMenu().findItem(R.id.nav_save).setEnabled(false);
 
-        dbHelper = DBHelper.getInstance(this);
-
         dataRecordStarted = false;
         dataRecordCompleted = false;
-        heightUnitSpinnerTouched = false;
-        subCreated = false;
+        deviceSpinnerTouched = false;
     }
 
     @Override
@@ -94,7 +89,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy called");
-        dbHelper.closeDB();
         super.onDestroy();
     }
 
@@ -116,11 +110,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_new:
-                if (!subCreated) {
-                    addFragment(new NewFragment(), true);
-                } else {
-                    addFragment(new SubjectInfoFragment(), true);
-                }
+                addFragment(new SubjectInfoFragment(), true);
                 break;
             case R.id.nav_start:
                 addFragment(new StartFragment(), true);
@@ -151,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
             //Check getFragments() == null to prevent the initial blank
-            //fragment (before 'New' fragment is displayed) from being added to the backstack
+            //fragment (before 'New' fragment is displayed) from being added to the back stack
             if (fragmentManager.getFragments() == null || !addToBackStack) {
                 fragmentTransaction.replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName())
                         .commit();

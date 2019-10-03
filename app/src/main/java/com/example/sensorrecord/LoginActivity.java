@@ -27,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
                 && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
                 && getIntent().getAction() != null
                 && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
-
             finish();
             return;
         }
@@ -49,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         //If at least one permission has been denied, show snackbar
         if (grantResults.length == 0 || !arePermissionsGranted(grantResults)) {
             Snackbar.make(findViewById(android.R.id.content), R.string.permission_explain, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.snackbar_request_permission, new View.OnClickListener() {
+                    .setAction(R.string.snackbar_request_permission,  new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             ActivityCompat.requestPermissions(LoginActivity.this, PERMISSIONS, 10);

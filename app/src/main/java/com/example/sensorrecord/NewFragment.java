@@ -1,6 +1,9 @@
 package com.example.sensorrecord;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,21 +19,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-public class NewFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class NewFragment extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     MainActivity mainActivity;
     CoordinatorLayout coordinatorLayout;
-    DBHelper dbHelper;
+    ExportCSV exportCSV;
+    SharedPreferences shareStatus;
 
     TextInputLayout nameWrapper;
     TextInputLayout ageWrapper;
@@ -46,47 +45,45 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
-        View view = inflater.inflate(R.layout.fragment_new, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        mainActivity = (MainActivity) getActivity();
+        setContentView(R.layout.activity_main);
+
+        shareStatus = getSharedPreferences("shareStatus", 0);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+
+        mainActivity = new MainActivity();
         mainActivity.navigationView.setCheckedItem(R.id.nav_new);
 
         mainActivity.setTitle("New Participant");
 
-        dbHelper = DBHelper.getInstance(getActivity());
-
         String[] values = {"Android 5: Lollipop", "Android 6: Marshmallow", "Android 7: Nougat", "Android 8: Oreo", "Android 9: Pie", "Android 10"};
-        Spinner spinner = (Spinner) view.findViewById(R.id.input_version_spinner);
-        ArrayAdapter<String> LTRadapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
-        LTRadapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        spinner.setAdapter(LTRadapter);
+        Spinner spinner = (Spinner) findViewById(R.id.input_version_spinner);
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, values);
+        listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(listAdapter);
 
         spinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                MainActivity.heightUnitSpinnerTouched = true;
+                MainActivity.deviceSpinnerTouched = true;
                 return false;
             }
         });
 
         spinner.setOnItemSelectedListener(this);
 
-        nameWrapper = (TextInputLayout) view.findViewById(R.id.input_name_wrapper);
-        ageWrapper = (TextInputLayout) view.findViewById(R.id.input_age_wrapper);
-        jobWrapper = (TextInputLayout) view.findViewById(R.id.input_job_wrapper);
+        nameWrapper = (TextInputLayout) findViewById(R.id.input_name_wrapper);
+        ageWrapper = (TextInputLayout) findViewById(R.id.input_age_wrapper);
+        jobWrapper = (TextInputLayout) findViewById(R.id.input_job_wrapper);
         versionTextView = (TextView) mainActivity.findViewById(R.id.input_name_device_version);
 
-        createButton = (Button) view.findViewById(R.id.input_submit);
+        createButton = (Button) findViewById(R.id.input_submit);
         createButton.setOnClickListener(this);
-
-        // Inflate the layout for this fragment
-        return view;
     }
 
-    //Height unit spinner item selection
+    //Device version spinner item selection
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -112,13 +109,13 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
         }
     }
 
-    //Height unit spinner item selection
+    //device version spinner item selection
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //Do nothing
     }
 
-    //Create/submit button click
+    // Create/submit button click
     @Override
     public void onClick(View v) {
         //Get input values
@@ -136,51 +133,32 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
             int radioId = sexGroup.indexOfChild(radioButton);
             RadioButton btn = (RadioButton) sexGroup.getChildAt(radioId);
             sex = (String) btn.getText();
-            sexLabel.setTextColor(ContextCompat.getColor(getContext(), R.color.colorSecondaryText));
+            sexLabel.setTextColor(ContextCompat.getColor(this, R.color.colorSecondaryText));
         }
 
         //If all the validation passes, submit the form. Else, show errors
-        if (!isEmpty(name) & !isEmpty(age) & !isEmpty(job) & sexID != -1) {
+        if (!isEmpty(name) & !isEmpty(age) & !isEmpty(job) & !isEmpty(version) & sexID != -1) {
             //Turn all errors off
             nameWrapper.setError(null);
             ageWrapper.setError(null);
             jobWrapper.setError(null);
             versionTextView.setError(null);
 
-            //check if subject already exists in main persistent subject table
-            if (!dbHelper.checkSubjectExists(Short.parseShort(age))) {
-                //subject doesn't already exist
+            exportCSV.createInformation(name, job, Short.parseShort(age), sex, version);
 
-                //Insert subject into TEMP subject table
-                MainActivity.subCreated = true;
+            //Hide the keyboard on click
+            showKeyboard(false, mainActivity);
 
-                dbHelper.insertSubjectTemp(
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()),
-                        name,
-                        job,
-                        Short.parseShort(age),
-                        sex,
-                        version,
-                        0
-                );
+            //Enable additional menu items/fragments for recording and saving sensor data
+            mainActivity.navigationView.getMenu().findItem(R.id.nav_start).setEnabled(true);
+            mainActivity.navigationView.getMenu().findItem(R.id.nav_save).setEnabled(true);
+            mainActivity.navigationView.getMenu().findItem(R.id.nav_new).setTitle("User Information");
 
-                //Hide the keyboard on click
-                showKeyboard(false, mainActivity);
+            Snackbar.make(coordinatorLayout, "User Information created", Snackbar.LENGTH_SHORT).show();
 
-                //Enable additional menu items/fragments for recording and saving sensor data
-                mainActivity.navigationView.getMenu().findItem(R.id.nav_start).setEnabled(true);
-                mainActivity.navigationView.getMenu().findItem(R.id.nav_save).setEnabled(true);
-                mainActivity.navigationView.getMenu().findItem(R.id.nav_new).setTitle("Subject Info");
+            //Change fragment to subject info screen. Do not add this fragment to the backstack
+            mainActivity.addFragment(new SubjectInfoFragment(), false);
 
-                Snackbar.make(coordinatorLayout, "Subject created", Snackbar.LENGTH_SHORT).show();
-
-                //Change fragment to subject info screen. Do not add this fragment to the backstack
-                mainActivity.addFragment(new SubjectInfoFragment(), false);
-            } else {
-                //subject exists. Set focus on subject number field
-                Snackbar.make(coordinatorLayout, "Subject number already exists...", Snackbar.LENGTH_SHORT).show();
-                nameWrapper.requestFocus();
-            }
         } else {
             if (isEmpty(name)) {
                 nameWrapper.setError("Name required");
@@ -200,15 +178,12 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
                 jobWrapper.setError(null);
             }
 
+            if (isEmpty(version)) {
+                versionTextView.setError("Device version required");
+            }
             //If no radio button has been selected
             if (sexID == -1) {
                 sexLabel.setTextColor(Color.RED);
-            }
-
-            if (version.equals("")) {
-                versionTextView.setError("Device version required");
-            } else {
-                versionTextView.setError(null);
             }
         }
     }

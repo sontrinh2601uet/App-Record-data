@@ -12,7 +12,7 @@
     <string name="snackbar_dismiss">Dismiss</string>
 
     <!-- Permissions -->
-    <string name="permission_explain">Hardware permissions required for this app to work</string>
+    <string name="permission_explain">Hardware permissions required for this app to work correctly</string>
     <string name="permission_explain_gps">Location data permission required for GPS access</string>
     <string name="permission_explain_write_storage">Storage write permission required to save data</string>
     <string name="permission_explain_wake_lock">Wake lock permission required to record sensor data</string>
@@ -55,15 +55,13 @@
 
     <!-- Subject info fragment -->
     <string name="subInfo_label_date">Date:</string>
-    <string name="subInfo_label_ra">Research Assistant:</string>
-    <string name="subInfo_label_subNum">Subject Number:</string>
-    <string name="subInfo_label_condition">Condition:</string>
+    <string name="subInfo_label_name">Name:</string>
+    <string name="subInfo_label_job">Job:</string>
     <string name="subInfo_label_age">Age:</string>
     <string name="subInfo_label_sex">Sex:</string>
-    <string name="subInfo_label_height">Height:</string>
-    <string name="subInfo_label_height_unit">cm</string>
+    <string name="subInfo_label_device_version">Device version:</string>
     <string name="subInfo_label_edit_button">Edit information</string>
-    <string name="subInfo_message_recording">(Cannot delete while recording data)</string>
+    <string name="subInfo_message_recording">(Cannot edit while recording data)</string>
 
     <!-- Start fragment -->
     <string name="start_label_subNum">Subject Number:</string>
