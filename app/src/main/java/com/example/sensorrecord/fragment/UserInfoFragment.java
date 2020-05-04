@@ -1,8 +1,9 @@
-package com.example.sensorrecord;
+package com.example.sensorrecord.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,18 +16,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class SubjectInfoFragment extends Fragment implements View.OnClickListener {
+import com.example.sensorrecord.MainActivity;
+import com.example.sensorrecord.R;
+
+import static android.content.Context.MODE_PRIVATE;
+
+public class UserInfoFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "SubjectInfoFragment";
 
     MainActivity mainActivity;
     Button deleteButton;
     TextView deleteMessage;
-    DBHelper dbHelper;
     ProgressDialog dialog;
     CoordinatorLayout coordinatorLayout;
 
-    public SubjectInfoFragment() {
+    public UserInfoFragment() {
         // Required empty public constructor
     }
 
@@ -43,7 +48,7 @@ public class SubjectInfoFragment extends Fragment implements View.OnClickListene
         mainActivity.navigationView.setCheckedItem(R.id.nav_new);
 
         //Set actionbar title
-        mainActivity.setTitle("Subject Information");
+        mainActivity.setTitle("User Information");
 
         //Listener for delete button
         deleteButton = (Button) view.findViewById(R.id.subInfo_button_delete);
@@ -51,7 +56,7 @@ public class SubjectInfoFragment extends Fragment implements View.OnClickListene
         deleteMessage = (TextView) view.findViewById(R.id.subInfo_delete_message);
 
         //Set state of delete button depending on whether recording is ongoing
-        if (MainActivity.dataRecordStarted & !MainActivity.dataRecordCompleted) {
+        if (MainActivity.dataRecordStarted) {
             deleteButton.setEnabled(false);
             deleteMessage.setText(R.string.subInfo_message_recording);
         } else {
@@ -59,26 +64,20 @@ public class SubjectInfoFragment extends Fragment implements View.OnClickListene
             deleteMessage.setText("");
         }
 
-        //DBHelper
-        dbHelper = DBHelper.getInstance(getActivity());
-
+        SharedPreferences pref = getActivity().getSharedPreferences("pref", MODE_PRIVATE);
         //Get form text view elements
-        TextView date = (TextView) view.findViewById(R.id.subInfo_value_date);
-        TextView ra = (TextView) view.findViewById(R.id.subInfo_value_ra);
-        TextView subNum = (TextView) view.findViewById(R.id.subInfo_value_subNum);
-        TextView condition = (TextView) view.findViewById(R.id.subInfo_value_condition);
+        TextView name = (TextView) view.findViewById(R.id.subInfo_value_name);
         TextView age = (TextView) view.findViewById(R.id.subInfo_value_age);
-        TextView sex = (TextView) view.findViewById(R.id.subInfo_value_sex);
-        TextView height = (TextView) view.findViewById(R.id.subInfo_value_height);
+        TextView job = (TextView) view.findViewById(R.id.subInfo_value_job);
+        TextView gender = (TextView) view.findViewById(R.id.subInfo_value_gender);
+        TextView device = (TextView) view.findViewById(R.id.subInfo_value_device);
 
         //Set the text view elements in layout to subject info from temp table
-        date.setText(dbHelper.getTempSubInfo("date"));
-        ra.setText(dbHelper.getTempSubInfo("ra"));
-        subNum.setText(dbHelper.getTempSubInfo("subNum"));
-        condition.setText(dbHelper.getTempSubInfo("condition"));
-        age.setText(dbHelper.getTempSubInfo("age"));
-        sex.setText(dbHelper.getTempSubInfo("sex"));
-        height.setText(dbHelper.getTempSubInfo("height"));
+        name.setText(pref.getString("name", null));
+        age.setText(pref.getString("age", null));
+        job.setText(pref.getString("job", null));
+        gender.setText(pref.getString("gender", null));
+        device.setText(pref.getString("device", null));
 
         // Inflate the layout for this fragment
         return view;
@@ -88,7 +87,7 @@ public class SubjectInfoFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mainActivity);
         alertDialogBuilder.setTitle("Delete?");
-        alertDialogBuilder.setMessage("Are you sure you want to delete the current subject?\n\n This action is irreversible.");
+        alertDialogBuilder.setMessage("Are you sure you want to delete the current user?\n This action is irreversible.");
 
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -123,18 +122,11 @@ public class SubjectInfoFragment extends Fragment implements View.OnClickListene
 
         protected Boolean doInBackground(final String... args) {
             try {
-                mainActivity.logger.i(getActivity(), TAG, "Subject deleted: #" + dbHelper.getTempSubInfo("subNum"));
-
-                //Clear the temp table of this users data
-                dbHelper.deleteSubject();
-
                 //Set subCreated flag to false
                 MainActivity.subCreated = false;
 
                 return true;
             } catch (SQLException e) {
-                mainActivity.logger.e(getActivity(), TAG, "SQL error deleteSubject()", e);
-
                 Snackbar.make(coordinatorLayout, "Error: " + e.getMessage(), Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.snackbar_dismiss, new View.OnClickListener() {
                             @Override

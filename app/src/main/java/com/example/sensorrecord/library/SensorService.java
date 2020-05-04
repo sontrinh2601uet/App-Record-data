@@ -1,4 +1,4 @@
-package com.example.sensorrecord;
+package com.example.sensorrecord.library;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -23,6 +23,9 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.example.sensorrecord.MainActivity;
+
+import java.math.BigDecimal;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -31,13 +34,13 @@ public class SensorService extends Service implements SensorEventListener {
 
     public static final String TAG = "SensorService";
 
-    public static final int SCREEN_OFF_RECEIVER_DELAY = 100;
+    public static int SCREEN_OFF_RECEIVER_DELAY = 100;
 
     //This can't be set below 10ms due to Android/hardware limitations. Use 9 to get more accurate 10ms intervals
-    final short POLL_FREQUENCY = 9; //in milliseconds
+    private short POLL_FREQUENCY; //in milliseconds
     long curTime;
     ExecutorService executor;
-    DBHelper dbHelper;
+    DataConnection dataConnection;
     Sensor sensor;
     Sensor accelerometer;
     Sensor gyroscope;
@@ -47,10 +50,11 @@ public class SensorService extends Service implements SensorEventListener {
     float[] gyroscopeMatrix = new float[3];
     float[] gravityMatrix = new float[3];
     float[] magneticMatrix = new float[3];
-    float[] rotationMatrix = new float[9];
+    float[] locationMatrix = new float[2];
     private long lastUpdate = -1;
     private Messenger messageHandler;
     private SensorManager sensorManager = null;
+
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -116,9 +120,9 @@ public class SensorService extends Service implements SensorEventListener {
             gyroscopeMatrix = event.values;
         } else if (i == MainActivity.TYPE_MAGNETIC) {
             magneticMatrix = event.values;
+        } else if (i == MainActivity.TYPE_GRAVITY) {
+            magneticMatrix = event.values;
         }
-
-        SensorManager.getRotationMatrix(rotationMatrix, null, gravityMatrix, magneticMatrix);
 
         curTime = event.timestamp; //in nanoseconds
 
@@ -129,7 +133,7 @@ public class SensorService extends Service implements SensorEventListener {
 
             try {
                 Runnable insertHandler = new InsertHandler(curTime, accelerometerMatrix, gyroscopeMatrix,
-                        gravityMatrix, magneticMatrix, rotationMatrix);
+                        gravityMatrix, magneticMatrix, locationMatrix);
                 executor.execute(insertHandler);
             } catch (SQLException e) {
                 Log.e(TAG, "insertData: " + e.getMessage(), e);
@@ -142,8 +146,7 @@ public class SensorService extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
 
-        dbHelper = DBHelper.getInstance(getApplicationContext());
-
+        dataConnection = new DataConnection(getApplicationContext());
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(MainActivity.TYPE_ACCELEROMETER);
         gyroscope = sensorManager.getDefaultSensor(MainActivity.TYPE_GYROSCOPE);
@@ -173,8 +176,8 @@ public class SensorService extends Service implements SensorEventListener {
 
         //Message handler for progress dialog
         Bundle extras = intent.getExtras();
-        messageHandler = (Messenger) extras.get("MESSENGER");
-
+        messageHandler = (Messenger) extras.get("messenger");
+        POLL_FREQUENCY = (short) (1000 / extras.getShort("frequency"));
         return START_STICKY;
     }
 
@@ -224,26 +227,31 @@ public class SensorService extends Service implements SensorEventListener {
         final float[] accelerometerMatrix;
         final float[] gyroscopeMatrix;
         final float[] magneticMatrix;
-        final float[] rotationMatrix;
+        final float[] gravityMatrix;
+        final float[] locationMatrix;
 
         //Store the current sensor array values into THIS objects arrays, and db insert from this object
         public InsertHandler(long curTime, float[] accelerometerMatrix,
                              float[] gyroscopeMatrix, float[] gravityMatrix,
-                             float[] magneticMatrix, float[] rotationMatrix) {
+                             float[] magneticMatrix, float[] locationMatrix) {
+
             this.curTime = curTime;
             this.accelerometerMatrix = accelerometerMatrix;
             this.gyroscopeMatrix = gyroscopeMatrix;
             this.magneticMatrix = magneticMatrix;
-            this.rotationMatrix = rotationMatrix;
+            this.gravityMatrix = gravityMatrix;
+            this.locationMatrix = locationMatrix;
         }
 
         public void run() {
-            dbHelper.insertDataTemp(
-                    this.curTime,
+            Log.i("", new BigDecimal(this.curTime / 1000000).toPlainString());
+            dataConnection.insertDataTemp(
+                    this.curTime / 1000000,
                     this.accelerometerMatrix,
                     this.gyroscopeMatrix,
                     this.magneticMatrix,
-                    this.rotationMatrix);
+                    this.gravityMatrix,
+                    this.locationMatrix);
         }
     }
 }

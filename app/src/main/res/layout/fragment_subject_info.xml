@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/subInfo_layout_padding"
-    tools:context=".SubjectInfoFragment">
+    tools:context=".fragment.UserInfoFragment">
 
     <TextView
-        android:id="@+id/subInfo_label_date"
+        android:id="@+id/subInfo_label_name"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
         android:layout_alignParentStart="true"
@@ -14,82 +14,22 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="@dimen/subInfo_label_margin_right"
         android:gravity="center_vertical"
-        android:text="@string/subInfo_label_date"
+        android:text="@string/subInfo_label_name"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/subInfo_value_date"
+        android:id="@+id/subInfo_value_name"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/subInfo_label_date"
-        android:gravity="center_vertical" />
-
-    <TextView
-        android:id="@+id/subInfo_label_ra"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_label_date"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="@dimen/subInfo_label_margin_right"
-        android:gravity="center_vertical"
-        android:text="@string/subInfo_label_ra"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/subInfo_value_ra"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_value_date"
-        android:layout_toRightOf="@id/subInfo_label_ra"
-        android:gravity="center_vertical" />
-
-    <TextView
-        android:id="@+id/subInfo_label_subNum"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_label_ra"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="@dimen/subInfo_label_margin_right"
-        android:gravity="center_vertical"
-        android:text="@string/subInfo_label_subNum"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/subInfo_value_subNum"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_value_ra"
-        android:layout_toRightOf="@id/subInfo_label_subNum"
-        android:gravity="center_vertical" />
-
-    <TextView
-        android:id="@+id/subInfo_label_condition"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_label_subNum"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="@dimen/subInfo_label_margin_right"
-        android:gravity="center_vertical"
-        android:text="@string/subInfo_label_condition"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/subInfo_value_condition"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_value_subNum"
-        android:layout_toRightOf="@id/subInfo_label_condition"
+        android:layout_toRightOf="@id/subInfo_label_name"
         android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/subInfo_label_age"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_label_condition"
+        android:layout_below="@id/subInfo_label_name"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="@dimen/subInfo_label_margin_right"
@@ -101,12 +41,12 @@
         android:id="@+id/subInfo_value_age"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_value_condition"
+        android:layout_below="@id/subInfo_value_name"
         android:layout_toRightOf="@id/subInfo_label_age"
         android:gravity="center_vertical" />
 
     <TextView
-        android:id="@+id/subInfo_label_sex"
+        android:id="@+id/subInfo_label_job"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
         android:layout_below="@id/subInfo_label_age"
@@ -114,51 +54,63 @@
         android:layout_alignParentLeft="true"
         android:layout_marginRight="@dimen/subInfo_label_margin_right"
         android:gravity="center_vertical"
-        android:text="@string/subInfo_label_sex"
+        android:text="@string/subInfo_label_job"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/subInfo_value_sex"
+        android:id="@+id/subInfo_value_job"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
         android:layout_below="@id/subInfo_value_age"
-        android:layout_toRightOf="@id/subInfo_label_sex"
+        android:layout_toRightOf="@id/subInfo_label_job"
         android:gravity="center_vertical" />
 
     <TextView
-        android:id="@+id/subInfo_label_height"
+        android:id="@+id/subInfo_label_gender"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_label_sex"
+        android:layout_below="@id/subInfo_label_job"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="@dimen/subInfo_label_margin_right"
         android:gravity="center_vertical"
-        android:text="@string/subInfo_label_height"
+        android:text="@string/subInfo_label_gender"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/subInfo_value_height"
+        android:id="@+id/subInfo_value_gender"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_value_sex"
-        android:layout_toRightOf="@id/subInfo_label_height"
+        android:layout_below="@id/subInfo_value_job"
+        android:layout_toRightOf="@id/subInfo_label_gender"
         android:gravity="center_vertical" />
 
     <TextView
-        android:id="@+id/subInfo_value_height_unit"
+        android:id="@+id/subInfo_label_device"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/subInfo_element_height"
-        android:layout_below="@id/subInfo_value_sex"
-        android:layout_toRightOf="@id/subInfo_value_height"
+        android:layout_below="@id/subInfo_label_gender"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="@dimen/subInfo_label_margin_right"
         android:gravity="center_vertical"
-        android:text="@string/subInfo_label_height_unit" />
+        android:text="@string/subInfo_label_device"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/subInfo_value_device"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/subInfo_element_height"
+        android:layout_below="@id/subInfo_value_gender"
+        android:layout_toRightOf="@id/subInfo_label_device"
+        android:gravity="center_vertical" />
 
     <Button
         android:id="@+id/subInfo_button_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/subInfo_value_height_unit"
+        android:layout_below="@id/subInfo_value_device"
+        android:layout_marginTop="15dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:text="@string/subInfo_label_edit_button" />

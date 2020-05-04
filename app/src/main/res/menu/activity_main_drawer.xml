@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Participant">
+    <item android:title="User &amp; Record data">
         <menu>
             <group android:checkableBehavior="single">
                 <item
@@ -12,10 +12,6 @@
                     android:id="@+id/nav_start"
                     android:icon="@android:drawable/ic_media_play"
                     android:title="@string/nav_start" />
-                <item
-                    android:id="@+id/nav_save"
-                    android:icon="@android:drawable/ic_menu_save"
-                    android:title="@string/nav_save" />
             </group>
         </menu>
     </item>

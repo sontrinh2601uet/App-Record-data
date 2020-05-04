@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <service android:name="com.example.sensorrecord.SensorService" />
+        <service android:name="com.example.sensorrecord.library.SensorService" />
 
         <activity android:name="com.example.sensorrecord.LoginActivity">
             <intent-filter>

@@ -1,4 +1,4 @@
-package com.example.sensorrecord;
+package com.example.sensorrecord.library;
 
 import android.content.Context;
 import android.content.res.Resources;

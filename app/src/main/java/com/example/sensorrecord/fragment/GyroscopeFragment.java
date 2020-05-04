@@ -1,4 +1,4 @@
-package com.example.sensorrecord;
+package com.example.sensorrecord.fragment;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -16,6 +16,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.androidplot.xy.XYPlot;
+import com.example.sensorrecord.MainActivity;
+import com.example.sensorrecord.R;
+import com.example.sensorrecord.library.DynamicLinePlot;
 
 public class GyroscopeFragment extends Fragment implements SensorEventListener {
 

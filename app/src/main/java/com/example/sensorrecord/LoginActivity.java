@@ -33,9 +33,16 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //If any of the permission have not been granted, request
-        if (!hasPermission(PERMISSIONS[0]) || !hasPermission(PERMISSIONS[1]) || !hasPermission(PERMISSIONS[2])) {
+        if (!hasPermission(PERMISSIONS[0]) || !hasPermission(PERMISSIONS[1]) ||
+                !hasPermission(PERMISSIONS[2])) {
+
             ActivityCompat.requestPermissions(this, PERMISSIONS, 10);
         }
+
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     public boolean hasPermission(String permission) {
@@ -56,11 +63,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     })
                     .show();
-        } else {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
         }
     }
 

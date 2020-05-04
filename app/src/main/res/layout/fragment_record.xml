@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/start_layout_padding"
+    tools:context="com.example.sensorrecord.fragment.RecordFragment">
+
+    <LinearLayout
+        android:id="@+id/frequency_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_frequency"
+            android:textSize="17sp" />
+
+        <EditText
+            android:id="@+id/frequency_value"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/record_frequency_hint"
+            android:gravity="center"
+            android:maxLines="1"
+            android:digits="0123456789"
+            android:text="50"
+            android:inputType="number"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_frequency_unit"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/template_of_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_below="@+id/frequency_layout"
+        android:layout_marginTop="10dp"
+        android:textSize="17sp"
+        android:text="@string/record_template_action" />
+
+    <LinearLayout
+        android:id="@+id/template_of_action_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/template_of_action"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical" >
+
+        <RadioGroup
+            android:id="@+id/template_of_action_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </RadioGroup>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/template_of_action_button_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="8dp"
+        android:text="@string/start_button_label_start" />
+
+    <TextView
+        android:id="@+id/start_recording_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/start_element_height"
+        android:layout_below="@id/startButton"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

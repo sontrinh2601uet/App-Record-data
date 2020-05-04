@@ -96,7 +96,7 @@
             android:text="@string/input_text_sex" />
 
         <RadioGroup
-            android:id="@+id/input_sex"
+            android:id="@+id/input_gender"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/new_form_element_height"
             android:layout_below="@id/input_label_device_version"
@@ -109,6 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="20dp"
+                android:checked="true"
                 android:text="@string/new_sex_male_label" />
 
             <RadioButton
@@ -122,9 +123,8 @@
             android:id="@+id/input_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/input_sex"
+            android:layout_below="@id/input_gender"
             android:layout_alignParentEnd="true"
-            android:ems="5"
             android:text="@string/input_button_save" />
     </RelativeLayout>
 </ScrollView>
