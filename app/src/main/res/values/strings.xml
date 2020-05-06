@@ -65,7 +65,7 @@
     <string name="start_button_label_stop">Stop</string>
     <string name="start_recording_complete">Recording complete.</string>
     <string name="start_recording">Recording…</string>
-    <string name="start_recording_progress">(recording in progress)</string>
+    <string name="start_recording_progress">Recording in progress. Please wait…</string>
     <string name="record_template_action">Select template of record data</string>
     <string name="sample_data">Walking,Falling,Running,Jumping,Sit Down,Stand up</string>
 

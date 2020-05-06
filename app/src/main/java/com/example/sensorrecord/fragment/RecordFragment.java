@@ -1,6 +1,5 @@
 package com.example.sensorrecord.fragment;
 
-import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.os.Messenger;
 import android.os.Vibrator;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.text.Editable;
@@ -100,15 +100,17 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String text = frequency.getText().toString();
+                String text = s.toString();
                 if (!text.equals("")) {
                     int frequencyValue = Integer.parseInt(text);
                     if (frequencyValue < MIN_TIME_RECORD || frequencyValue > MAX_TIME_RECORD) {
-                        frequency.setError("Out of Range Value (1 ~ 300 second)");
+                        frequency.setError("Out of Range Value (1 ~ 100 Hz)");
                         startButton.setEnabled(false);
                     } else {
                         startButton.setEnabled(true);
                     }
+                } else {
+                    startButton.setEnabled(false);
                 }
             }
         });
@@ -117,6 +119,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().length() > 3) {
+                    timeRecord.setText(s.toString().substring(0, 3));
+                }
             }
 
             @Override
@@ -129,11 +134,13 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 if (!text.equals("")) {
                     int frequencyValue = Integer.parseInt(text);
                     if (frequencyValue < MIN_FREQUENCY || frequencyValue > MAX_FREQUENCY) {
-                        frequency.setError("Out of Range Value (1 ~ 100 Hz)");
+                        timeRecord.setError("Out of Range Value (1 ~ 300 second)");
                         startButton.setEnabled(false);
                     } else {
                         startButton.setEnabled(true);
                     }
+                } else {
+                    startButton.setEnabled(false);
                 }
             }
         });
@@ -219,7 +226,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 //Set recording progress message
                 recordProgressMessage.setText(R.string.start_recording_progress);
                 MainActivity.dataRecordStarted = true;
-                startButton.setText(R.string.start_button_label_stop);
 
                 //Start the service
                 Intent startService = new Intent(mainActivity, SensorService.class);
@@ -232,11 +238,10 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             } catch (SQLException e) {
             }
         } else {
-            recordProgressMessage.setText("");
             MainActivity.dataRecordStarted = false;
-            startButton.setText(R.string.start_button_label_start);
 
             //Stop the service
+            recordProgressMessage.setText("");
             mainActivity.stopService(new Intent(mainActivity, SensorService.class));
 
             //Re-enable the hamburger, and swipes, after recording

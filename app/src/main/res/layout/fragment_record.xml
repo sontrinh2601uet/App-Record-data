@@ -24,6 +24,7 @@
             android:gravity="center"
             android:hint="@string/record_frequency_hint"
             android:inputType="number"
+            android:maxLength="3"
             android:maxLines="1"
             android:text="50" />
 
@@ -77,6 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@+id/vehicle_selection"
+        android:layout_marginTop="25dp"
         android:orientation="horizontal">
 
         <TextView
@@ -84,8 +86,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="@string/record_time_length"
-            android:textSize="17sp">
-        </TextView>
+            android:textSize="17sp" />
 
         <EditText
             android:id="@+id/time_record"
@@ -93,18 +94,17 @@
             android:layout_height="match_parent"
             android:digits="0123456789"
             android:gravity="center"
-            android:text="15"
             android:inputType="number"
-            android:maxLines="1">
-        </EditText>
+            android:maxLength="3"
+            android:maxLines="1"
+            android:text="15" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="@string/record_time_length_unit"
-            android:textSize="17sp">
-        </TextView>
+            android:textSize="17sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -136,6 +136,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/start_element_height"
         android:layout_below="@id/startButton"
+        android:textColor="@color/graphZ"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
