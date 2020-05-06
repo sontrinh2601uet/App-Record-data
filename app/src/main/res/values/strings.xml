@@ -90,4 +90,18 @@
     <string name="version_device_9">Android 9: Pie</string>
     <string name="version_device_10">Android 10</string>
 
+    <string name="subInfo_label_device_name">Device name</string>
+    <string name="record_vehicle_action">Vehicle</string>
+    <string name="record_time_length">Record time</string>
+    <string name="record_time_length_unit">second</string>
+
+    <string-array name="vehicle">
+        <item>None(Walking)</item>
+        <item>Bicycle</item>
+        <item>Electric Bicycle</item>
+        <item>Car</item>
+        <item>Bus</item>
+
+    </string-array>
+
 </resources>

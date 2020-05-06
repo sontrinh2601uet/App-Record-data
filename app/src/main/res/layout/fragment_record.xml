@@ -20,12 +20,12 @@
             android:id="@+id/frequency_value"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:hint="@string/record_frequency_hint"
-            android:gravity="center"
-            android:maxLines="1"
             android:digits="0123456789"
-            android:text="50"
-            android:inputType="number"/>
+            android:gravity="center"
+            android:hint="@string/record_frequency_hint"
+            android:inputType="number"
+            android:maxLines="1"
+            android:text="50" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,25 +39,86 @@
         android:id="@+id/template_of_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical"
         android:layout_below="@+id/frequency_layout"
         android:layout_marginTop="10dp"
-        android:textSize="17sp"
-        android:text="@string/record_template_action" />
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/record_template_action"
+        android:textSize="17sp" />
+
+    <LinearLayout
+        android:id="@+id/vehicle_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/template_of_action"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/record_vehicle_action"
+            android:textSize="17sp">
+
+        </TextView>
+
+        <Spinner
+            android:id="@+id/spinner_vehicle"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="5dp"
+            android:entries="@array/vehicle"
+            tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/set_max_time_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/vehicle_selection"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/record_time_length"
+            android:textSize="17sp">
+        </TextView>
+
+        <EditText
+            android:id="@+id/time_record"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:digits="0123456789"
+            android:gravity="center"
+            android:text="15"
+            android:inputType="number"
+            android:maxLines="1">
+        </EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/record_time_length_unit"
+            android:textSize="17sp">
+        </TextView>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/template_of_action_button_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/template_of_action"
+        android:layout_below="@+id/set_max_time_layout"
         android:layout_marginTop="20dp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <RadioGroup
             android:id="@+id/template_of_action_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </RadioGroup>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <Button

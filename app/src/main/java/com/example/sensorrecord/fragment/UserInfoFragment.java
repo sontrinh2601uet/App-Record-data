@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -71,13 +72,15 @@ public class UserInfoFragment extends Fragment implements View.OnClickListener {
         TextView job = (TextView) view.findViewById(R.id.subInfo_value_job);
         TextView gender = (TextView) view.findViewById(R.id.subInfo_value_gender);
         TextView device = (TextView) view.findViewById(R.id.subInfo_value_device);
+        TextView deviceName = (TextView) view.findViewById(R.id.subInfo_value_name_device);
 
         //Set the text view elements in layout to subject info from temp table
         name.setText(pref.getString("name", null));
         age.setText(pref.getString("age", null));
         job.setText(pref.getString("job", null));
         gender.setText(pref.getString("gender", null));
-        device.setText(pref.getString("device", null));
+        device.setText(Build.VERSION.SDK);
+        deviceName.setText(Build.MODEL);
 
         // Inflate the layout for this fragment
         return view;

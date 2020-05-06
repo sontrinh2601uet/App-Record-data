@@ -61,36 +61,10 @@
             android:layout_below="@id/input_job_wrapper"/>
 
         <TextView
-            android:id="@+id/input_label_device_version"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/new_form_element_height"
-            android:layout_below="@id/input_job_wrapper"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/new_height_label_right_padding"
-            android:text="@string/input_text_version" />
-
-        <TextView
-            android:id="@+id/input_name_device_version"
-            android:layout_width="@dimen/new_input_height_cm"
-            android:layout_height="@dimen/new_form_element_height"
-            android:layout_below="@id/input_job_wrapper"
-            android:layout_toEndOf="@id/input_label_device_version"
-            android:gravity="center"
-            android:hint="@string/input_text_version_hint"/>
-
-        <Spinner
-            android:id="@+id/input_version_spinner"
-            android:layout_width="@dimen/new_input_height_spinner"
-            android:layout_height="@dimen/new_form_element_height"
-            android:layout_below="@+id/input_job_wrapper"
-            android:layout_toEndOf="@id/input_name_device_version"
-            android:gravity="bottom" />
-
-        <TextView
             android:id="@+id/input_label_sex"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/new_form_element_height"
-            android:layout_below="@id/input_label_device_version"
+            android:layout_below="@id/input__wrapper"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/new_sex_label_right_padding"
             android:text="@string/input_text_sex" />
@@ -99,7 +73,7 @@
             android:id="@+id/input_gender"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/new_form_element_height"
-            android:layout_below="@id/input_label_device_version"
+            android:layout_below="@id/input__wrapper"
             android:layout_toEndOf="@id/input_label_sex"
             android:gravity="center_vertical"
             android:orientation="horizontal">

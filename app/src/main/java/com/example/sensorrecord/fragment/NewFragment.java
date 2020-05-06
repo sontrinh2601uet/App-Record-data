@@ -25,7 +25,7 @@ import com.example.sensorrecord.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class NewFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class NewFragment extends Fragment implements View.OnClickListener {
 
     MainActivity mainActivity;
     CoordinatorLayout coordinatorLayout;
@@ -33,7 +33,6 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
     TextInputLayout nameWrapper;
     TextInputLayout ageWrapper;
     TextInputLayout jobWrapper;
-    TextView versionTextView;
 
     RadioGroup genderGroup;
     Button createButton;
@@ -54,26 +53,9 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
         mainActivity.navigationView.setCheckedItem(R.id.nav_new);
         mainActivity.setTitle("New User");
 
-        String[] values = {"Android 5: Lollipop", "Android 6: Marshmallow", "Android 7: Nougat", "Android 8: Oreo", "Android 9: Pie", "Android 10"};
-        Spinner spinner = (Spinner) view.findViewById(R.id.input_version_spinner);
-        ArrayAdapter<String> LTRadapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
-        LTRadapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        spinner.setAdapter(LTRadapter);
-
-        spinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                MainActivity.androidVersionSpinner = true;
-                return false;
-            }
-        });
-
-        spinner.setOnItemSelectedListener(this);
-
         nameWrapper = (TextInputLayout) view.findViewById(R.id.input_name_wrapper);
         ageWrapper = (TextInputLayout) view.findViewById(R.id.input_age_wrapper);
         jobWrapper = (TextInputLayout) view.findViewById(R.id.input_job_wrapper);
-        versionTextView = (TextView) view.findViewById(R.id.input_name_device_version);
 
         createButton = (Button) view.findViewById(R.id.input_submit);
         createButton.setOnClickListener(this);
@@ -93,7 +75,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
         }
     }
 
-    private void saveLogin(String name, String age, String job, String gender, String device) {
+    private void saveLogin(String name, String age, String job, String gender) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences("pref", MODE_PRIVATE).edit();
 
         editor.putBoolean("isLogin", true);
@@ -101,41 +83,8 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
         editor.putString("age", age);
         editor.putString("job", job);
         editor.putString("gender", gender);
-        editor.putString("device", device);
 
         editor.commit();
-    }
-
-    //Height unit spinner item selection
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-        switch (position) {
-            case 0:
-                versionTextView.setText(R.string.version_device_5);
-                break;
-            case 1:
-                versionTextView.setText(R.string.version_device_6);
-                break;
-            case 2:
-                versionTextView.setText(R.string.version_device_7);
-                break;
-            case 3:
-                versionTextView.setText(R.string.version_device_8);
-                break;
-            case 4:
-                versionTextView.setText(R.string.version_device_9);
-                break;
-            case 5:
-                versionTextView.setText(R.string.version_device_10);
-                break;
-        }
-    }
-
-    //Height unit spinner item selection
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        //Do nothing
     }
 
     //Create/submit button click
@@ -146,7 +95,6 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
         String age = ageWrapper.getEditText().getText().toString();
         String job = jobWrapper.getEditText().getText().toString();
         String gender = "";
-        String version = (String) versionTextView.getText();
 
         genderGroup = (RadioGroup) mainActivity.findViewById(R.id.input_gender);
         int genderID = genderGroup.getCheckedRadioButtonId();
@@ -164,7 +112,6 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
             nameWrapper.setError(null);
             ageWrapper.setError(null);
             jobWrapper.setError(null);
-            versionTextView.setError(null);
 
             MainActivity.subCreated = true;
 
@@ -177,7 +124,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemSelectedL
 
             Snackbar.make(coordinatorLayout, "Subject created", Snackbar.LENGTH_SHORT).show();
 
-            saveLogin(name, age, job, gender, version);
+            saveLogin(name, age, job, gender);
             //Change fragment to subject info screen. Do not add this fragment to the backStack
             mainActivity.addFragment(new UserInfoFragment(), false);
 
