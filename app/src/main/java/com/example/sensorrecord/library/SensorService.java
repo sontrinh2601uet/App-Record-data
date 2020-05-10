@@ -46,11 +46,12 @@ public class SensorService extends Service implements SensorEventListener {
     Sensor gyroscope;
     Sensor gravity;
     Sensor magnetic;
+    Sensor orientation;
     float[] accelerometerMatrix = new float[3];
     float[] gyroscopeMatrix = new float[3];
     float[] gravityMatrix = new float[3];
     float[] magneticMatrix = new float[3];
-    float[] locationMatrix = new float[2];
+    float[] orientationMatrix = new float[3];
     private long lastUpdate = -1;
     private Messenger messageHandler;
     private SensorManager sensorManager = null;
@@ -82,6 +83,7 @@ public class SensorService extends Service implements SensorEventListener {
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, gravity, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, magnetic, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     private void unregisterListener() {
@@ -122,6 +124,8 @@ public class SensorService extends Service implements SensorEventListener {
             magneticMatrix = event.values;
         } else if (i == MainActivity.TYPE_GRAVITY) {
             magneticMatrix = event.values;
+        } else if (i == MainActivity.TYPE_ORIENTATION) {
+            orientationMatrix = event.values;
         }
 
         curTime = event.timestamp; //in nanoseconds
@@ -133,7 +137,7 @@ public class SensorService extends Service implements SensorEventListener {
 
             try {
                 Runnable insertHandler = new InsertHandler(curTime, accelerometerMatrix, gyroscopeMatrix,
-                        gravityMatrix, magneticMatrix, locationMatrix);
+                        gravityMatrix, magneticMatrix, orientationMatrix);
                 executor.execute(insertHandler);
             } catch (SQLException e) {
                 Log.e(TAG, "insertData: " + e.getMessage(), e);
@@ -151,6 +155,7 @@ public class SensorService extends Service implements SensorEventListener {
         accelerometer = sensorManager.getDefaultSensor(MainActivity.TYPE_ACCELEROMETER);
         gyroscope = sensorManager.getDefaultSensor(MainActivity.TYPE_GYROSCOPE);
         magnetic = sensorManager.getDefaultSensor(MainActivity.TYPE_MAGNETIC);
+        orientation = sensorManager.getDefaultSensor(MainActivity.TYPE_ORIENTATION);
 
         PowerManager manager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -172,7 +177,7 @@ public class SensorService extends Service implements SensorEventListener {
 
         startForeground(Process.myPid(), new Notification());
         registerListener();
-        wakeLock.acquire();
+        wakeLock.acquire(10*60*1000L /*10 minutes*/);
 
         //Message handler for progress dialog
         Bundle extras = intent.getExtras();
@@ -228,19 +233,19 @@ public class SensorService extends Service implements SensorEventListener {
         final float[] gyroscopeMatrix;
         final float[] magneticMatrix;
         final float[] gravityMatrix;
-        final float[] locationMatrix;
+        final float[] orientationMatrix;
 
         //Store the current sensor array values into THIS objects arrays, and db insert from this object
-        public InsertHandler(long curTime, float[] accelerometerMatrix,
-                             float[] gyroscopeMatrix, float[] gravityMatrix,
-                             float[] magneticMatrix, float[] locationMatrix) {
+        InsertHandler(long curTime, float[] accelerometerMatrix,
+                      float[] gyroscopeMatrix, float[] gravityMatrix,
+                      float[] magneticMatrix, float[] orientationMatrix) {
 
             this.curTime = curTime;
             this.accelerometerMatrix = accelerometerMatrix;
             this.gyroscopeMatrix = gyroscopeMatrix;
             this.magneticMatrix = magneticMatrix;
             this.gravityMatrix = gravityMatrix;
-            this.locationMatrix = locationMatrix;
+            this.orientationMatrix = orientationMatrix;
         }
 
         public void run() {
@@ -251,7 +256,7 @@ public class SensorService extends Service implements SensorEventListener {
                     this.gyroscopeMatrix,
                     this.magneticMatrix,
                     this.gravityMatrix,
-                    this.locationMatrix);
+                    this.orientationMatrix);
         }
     }
 }

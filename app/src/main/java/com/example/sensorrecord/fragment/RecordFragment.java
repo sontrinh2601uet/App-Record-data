@@ -3,6 +3,7 @@ package com.example.sensorrecord.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -41,6 +43,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class RecordFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "RecordFragment";
@@ -50,6 +54,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private static final int MAX_TIME_RECORD = 300;
     //Message handler for service
     public static String currentTemplateAction;
+    public static String currentTypeSensor;
     public static Handler messageHandler = new MessageHandler();
 
     static MainActivity mainActivity;
@@ -59,7 +64,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     TextView recordProgressMessage;
     EditText frequency;
     EditText timeRecord;
-    RadioGroup group;
+    RadioGroup actionTemplate;
+    RadioGroup typeSensor;
 
     public RecordFragment() {
         // Required empty public constructor
@@ -83,6 +89,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         //Get form text view element and set
         createTemplateActionView(view);
         recordProgressMessage = (TextView) view.findViewById(R.id.start_recording_progress);
+        typeSensor = (RadioGroup) view.findViewById(R.id.sensor_type_select);
         frequency = (EditText) view.findViewById(R.id.frequency_value);
         timeRecord = (EditText) view.findViewById(R.id.time_record);
         startButton = (Button) view.findViewById(R.id.startButton);
@@ -145,6 +152,13 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        currentTypeSensor = ((RadioButton) typeSensor.getChildAt(0)).getText().toString();
+        typeSensor.setOnCheckedChangeListener((actionTemplate, checkedId) -> {
+            // checkedId is the RadioButton selected
+            RadioButton button = (RadioButton) actionTemplate.findViewById(checkedId);
+            currentTypeSensor = button.getText().toString();
+        });
+
         //Set button state depending on whether recording has been started and/or stopped
         if (MainActivity.dataRecordStarted) {
             //started and not completed: enable STOP button
@@ -159,9 +173,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createTemplateActionView(View view) {
-        group = (RadioGroup) view.findViewById(R.id.template_of_action_button);
+        actionTemplate = (RadioGroup) view.findViewById(R.id.template_of_action_button);
 
-        String sampleData = getString(R.string.sample_data);
+        String[] sampleData = getResources().getStringArray(R.array.sample_data);
 
         String pathToExternalStorage = Environment.getExternalStorageDirectory().toString();
         File exportDir = new File(pathToExternalStorage, "/SensorRecord");
@@ -171,7 +185,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             try {
                 OutputStreamWriter writer = new OutputStreamWriter(
                         new FileOutputStream(templateAction), StandardCharsets.UTF_8);
-                writer.write(sampleData);
+                for (String template : sampleData) {
+                    writer.write(template + "\n");
+                }
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -186,7 +202,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             String str;
 
             while ((str = in.readLine()) != null) {
-                dataInFile.append(str);
+                dataInFile.append(str + ",");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,14 +215,14 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
             template.setText(listTemplate[i]);
             template.setId(i);
-            group.addView(template);
+            actionTemplate.addView(template);
         }
 
-        group.check(0);
-        currentTemplateAction = ((RadioButton) group.getChildAt(0)).getText().toString();
-        group.setOnCheckedChangeListener((group, checkedId) -> {
+        actionTemplate.check(0);
+        currentTemplateAction = ((RadioButton) actionTemplate.getChildAt(0)).getText().toString();
+        actionTemplate.setOnCheckedChangeListener((actionTemplate, checkedId) -> {
             // checkedId is the RadioButton selected
-            RadioButton button = (RadioButton) group.findViewById(checkedId);
+            RadioButton button = (RadioButton) actionTemplate.findViewById(checkedId);
             currentTemplateAction = button.getText().toString();
         });
     }
@@ -235,6 +251,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
                 Snackbar.make(coordinatorLayout, R.string.start_recording, Snackbar.LENGTH_SHORT).show();
                 startButton.setEnabled(false);
+                mainActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             } catch (SQLException e) {
             }
         } else {
@@ -250,11 +268,18 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             mainActivity.hamburger.syncState();
 
             DataConnection connection = new DataConnection(getContext());
-            connection.exportTrackingData();
+            SharedPreferences pref = getActivity().getSharedPreferences("pref", MODE_PRIVATE);
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("pref", MODE_PRIVATE).edit();
+            int trialNo = pref.getInt("trial_no", 1);
+            connection.exportTrackingData(trialNo);
+            editor.remove("trial_no");
+            editor.putInt("trial_no", trialNo + 1);
+            editor.commit();
 
             //Show snackbar message for recording complete
             Snackbar.make(coordinatorLayout, R.string.start_recording_complete, Snackbar.LENGTH_SHORT).show();
             startButton.setEnabled(true);
+            mainActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 

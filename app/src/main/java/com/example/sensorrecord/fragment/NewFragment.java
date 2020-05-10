@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -25,7 +27,7 @@ import com.example.sensorrecord.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class NewFragment extends Fragment implements View.OnClickListener {
+public class NewFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     MainActivity mainActivity;
     CoordinatorLayout coordinatorLayout;
@@ -33,17 +35,25 @@ public class NewFragment extends Fragment implements View.OnClickListener {
     TextInputLayout nameWrapper;
     TextInputLayout ageWrapper;
     TextInputLayout jobWrapper;
+    EditText heightCM;
+    EditText heightFT;
+    EditText heightIN;
+    TextView heightFTSym;
+    TextView heightINSym;
 
     RadioGroup genderGroup;
     Button createButton;
+
+    Integer height;
+    String heightUnit;
+    Boolean heightEntered;
 
     public NewFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
         mainActivity = (MainActivity) getActivity();
@@ -53,9 +63,32 @@ public class NewFragment extends Fragment implements View.OnClickListener {
         mainActivity.navigationView.setCheckedItem(R.id.nav_new);
         mainActivity.setTitle("New User");
 
+        String[] values = {"cm", "ft/in"};
+        Spinner spinner = (Spinner) view.findViewById(R.id.input_height_spinner);
+        ArrayAdapter<String> LTRadapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        LTRadapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(LTRadapter);
+
+        //Set a flag for when the user manually chooses the spinner (for focus setting on height EditText)
+        spinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                MainActivity.heightUnitSpinnerTouched = true;
+                return false;
+            }
+        });
+
+        spinner.setOnItemSelectedListener(this);
+
         nameWrapper = (TextInputLayout) view.findViewById(R.id.input_name_wrapper);
         ageWrapper = (TextInputLayout) view.findViewById(R.id.input_age_wrapper);
         jobWrapper = (TextInputLayout) view.findViewById(R.id.input_job_wrapper);
+
+        heightCM = (EditText) view.findViewById(R.id.input_height_cm);
+        heightFT = (EditText) view.findViewById(R.id.input_height_ft);
+        heightIN = (EditText) view.findViewById(R.id.input_height_in);
+        heightFTSym = (TextView) view.findViewById(R.id.input_label_height_ft_symbol);
+        heightINSym = (TextView) view.findViewById(R.id.input_label_height_in_symbol);
 
         createButton = (Button) view.findViewById(R.id.input_submit);
         createButton.setOnClickListener(this);
@@ -76,13 +109,19 @@ public class NewFragment extends Fragment implements View.OnClickListener {
     }
 
     private void saveLogin(String name, String age, String job, String gender) {
+        SharedPreferences pref = getActivity().getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences.Editor editor = getActivity().getSharedPreferences("pref", MODE_PRIVATE).edit();
 
+        int previousIdUsed = pref.getInt("id", 0);
+
+        editor.putInt("id", previousIdUsed + 1);
         editor.putBoolean("isLogin", true);
         editor.putString("name", name);
         editor.putString("age", age);
         editor.putString("job", job);
         editor.putString("gender", gender);
+        editor.putInt("height", height);
+        editor.putString("heightUnit", heightUnit);
 
         editor.commit();
     }
@@ -94,7 +133,11 @@ public class NewFragment extends Fragment implements View.OnClickListener {
         String name = nameWrapper.getEditText().getText().toString();
         String age = ageWrapper.getEditText().getText().toString();
         String job = jobWrapper.getEditText().getText().toString();
+        String heightCMValue = heightCM.getText().toString();
+        String heightFTValue = heightFT.getText().toString();
+        String heightINValue = heightIN.getText().toString();
         String gender = "";
+        TextView heightLabel = (TextView) mainActivity.findViewById(R.id.input_label_height);
 
         genderGroup = (RadioGroup) mainActivity.findViewById(R.id.input_gender);
         int genderID = genderGroup.getCheckedRadioButtonId();
@@ -104,6 +147,27 @@ public class NewFragment extends Fragment implements View.OnClickListener {
             int radioId = genderGroup.indexOfChild(radioButton);
             RadioButton btn = (RadioButton) genderGroup.getChildAt(radioId);
             gender = (String) btn.getText();
+        }
+
+        if (heightUnit.equals("cm")) {
+            if (!isEmpty(heightCMValue)) {
+                heightLabel.setTextColor(ContextCompat.getColor(getContext(), R.color.colorSecondaryText));
+                height = Integer.parseInt(heightCM.getText().toString());
+                heightEntered = true;
+            } else {
+                heightEntered = false;
+            }
+        } else if (heightUnit.equals("ft")) {
+            if (!isEmpty(heightFTValue) & !isEmpty(heightINValue)) {
+                heightLabel.setTextColor(ContextCompat.getColor(getContext(), R.color.colorSecondaryText));
+                Integer feet = Integer.parseInt(heightFT.getText().toString());
+                Integer inches = Integer.parseInt(heightIN.getText().toString());
+
+                height = (int) ((feet * 30) + (inches * 2.54));
+                heightEntered = true;
+            } else {
+                heightEntered = false;
+            }
         }
 
         //If all the validation passes, submit the form. Else, show errors
@@ -166,4 +230,42 @@ public class NewFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                heightCM.setVisibility(View.VISIBLE);
+                heightFT.setVisibility(View.INVISIBLE);
+                heightIN.setVisibility(View.INVISIBLE);
+                heightFTSym.setVisibility(View.INVISIBLE);
+                heightINSym.setVisibility(View.INVISIBLE);
+                heightUnit = "cm";
+
+                //Only request focus if the user manually selected the spinner
+                //Otherwise focus will be pulled on layout inflation
+                if (MainActivity.heightUnitSpinnerTouched) {
+                    heightCM.requestFocus();
+                }
+                break;
+            case 1:
+                heightCM.setVisibility(View.INVISIBLE);
+                heightFT.setVisibility(View.VISIBLE);
+                heightIN.setVisibility(View.VISIBLE);
+                heightFTSym.setVisibility(View.VISIBLE);
+                heightINSym.setVisibility(View.VISIBLE);
+                heightUnit = "ft";
+
+                //Only request focus if the user manually selected the spinner
+                //Otherwise focus will be pulled on layout inflation
+                if (MainActivity.heightUnitSpinnerTouched) {
+                    heightFT.requestFocus();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

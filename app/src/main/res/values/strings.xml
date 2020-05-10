@@ -28,7 +28,7 @@
     <string name="nav_accelerometer">Accelerometer</string>
     <string name="nav_magnetometer">Magnetometer</string>
     <string name="nav_gyroscope">Gyroscope</string>
-    <string name="nav_gps">GPS</string>
+    <string name="nav_orientation">Orientation</string>
 
     <!-- New participant fragment-->
     <string name="input_text_ra">Name</string>
@@ -39,6 +39,12 @@
     <string name="input_text_sex">Sex:</string>
     <string name="new_sex_male_label">Male</string>
     <string name="new_sex_female_label">Female</string>
+    <string name="input_text_height">Height:</string>
+    <string name="input_text_height_cm">centimeters</string>
+    <string name="input_text_height_ft">feet</string>
+    <string name="input_text_height_in">inches</string>
+    <string name="new_height_ft_symbol">\'</string>
+    <string name="new_height_in_symbol">\"</string>
     <string name="input_button_save">Create user</string>
 
     <!-- Raw sensor data fragment -->
@@ -67,7 +73,6 @@
     <string name="start_recording">Recording…</string>
     <string name="start_recording_progress">Recording in progress. Please wait…</string>
     <string name="record_template_action">Select template of record data</string>
-    <string name="sample_data">Walking,Falling,Running,Jumping,Sit Down,Stand up</string>
 
     <!-- Save fragment -->
     <string name="save_button_text">Save &#038; Quit</string>
@@ -94,6 +99,27 @@
     <string name="record_vehicle_action">Vehicle</string>
     <string name="record_time_length">Record time</string>
     <string name="record_time_length_unit">second</string>
+    <string name="sensor_type_title">Sensor type</string>
+    <string name="sensor_type_all">All</string>
+
+    <string-array name="sample_data">
+        <item>STD - Standing</item>
+        <item>WAL - Walking</item>
+        <item>JOG - Jogging</item>
+        <item>JUM - Jumping</item>
+        <item>STU - Stairs up</item>
+        <item>STN - Stairs down</item>
+        <item>SCH - Stand to sit(sit on chair)</item>
+        <item>SIT - Sitting on chair</item>
+        <item>CHU - Sit to stand(chair up)</item>
+        <item>CSI - Car-step in</item>
+        <item>CSO - Car-step out</item>
+        <item>LYI - Lying</item>
+        <item>FOL - Forward-lying</item>
+        <item>FKL - Front-knees-lying</item>
+        <item>BSC - Back-sitting-chair</item>
+        <item>SDL - Sideward-lying</item>
+    </string-array>
 
     <string-array name="vehicle">
         <item>None(Walking)</item>
@@ -101,7 +127,6 @@
         <item>Electric Bicycle</item>
         <item>Car</item>
         <item>Bus</item>
-
     </string-array>
 
 </resources>

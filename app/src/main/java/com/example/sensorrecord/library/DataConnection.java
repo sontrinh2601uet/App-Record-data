@@ -26,21 +26,23 @@ public class DataConnection {
     private static final String GYROSCOPE = "gyroscope";
     private static final String MAGNETIC = "magnetic";
     private static final String GRAVITY = "gravity";
-    private static final String GPS = "gps";
+    private static final String ORIENTATION = "orientation";
 
     private String headerFile;
     static ArrayList<float[]> timeLineData = new ArrayList<>();
 
+    private SharedPreferences pref;
     private SimpleDateFormat sdf;
     private Context context;
 
     public DataConnection(Context context) {
+        pref = context.getSharedPreferences("pref", MODE_PRIVATE);
         this.context = context;
     }
 
-    public void insertDataTemp(long time, float[] acc, float[] gyro, float[] mag, float[] gra, float[] gps) {
+    public void insertDataTemp(long time, float[] acc, float[] gyro, float[] mag, float[] gra, float[] ori) {
 
-        float[] data = new float[15];
+        float[] data = new float[16];
 
         data[0] = time;
 
@@ -60,29 +62,34 @@ public class DataConnection {
         data[11] = gra[1];
         data[12] = gra[2];
 
-        data[13] = gps[0];
-        data[14] = gps[1];
+        data[13] = ori[0];
+        data[14] = ori[1];
+        data[14] = ori[2];
 
         timeLineData.add(data);
     }
 
-    public void exportTrackingData() throws SQLException {
+    public void exportTrackingData(int trialTimes) throws SQLException {
         sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         String actionTemplate = RecordFragment.currentTemplateAction;
+        String typeSensor = RecordFragment.currentTypeSensor;
         String pathToExternalStorage = Environment.getExternalStorageDirectory().toString();
         File exportDir = new File(pathToExternalStorage, "/SensorRecord");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
-        File folderData = new File(exportDir, File.separator + sdf.format(new Date()) + "_" + actionTemplate);
+        File folderData = new File(exportDir, File.separator + "record");
         folderData.mkdir();
 
-        getHeaderFile(actionTemplate);
-        exportData(ACCELEROMETER, folderData);
-        exportData(GYROSCOPE, folderData);
-        exportData(MAGNETIC, folderData);
-        exportData(GRAVITY, folderData);
+        getHeaderFile(actionTemplate, typeSensor);
+
+        String name = actionTemplate.substring(0, actionTemplate.indexOf("-")) + "_"
+                + typeSensor.toLowerCase()  + "_"
+                + pref.getInt("id", 1) + "_"
+                + trialTimes;
+
+        exportData(name, folderData);
     }
 
     private void exportData(String name, File folderData) {
@@ -102,6 +109,9 @@ public class DataConnection {
             case GRAVITY:
                 startPos = 10;
                 break;
+            case ORIENTATION:
+                startPos = 13;
+                break;
         }
         try {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(accData), StandardCharsets.UTF_8);
@@ -118,24 +128,33 @@ public class DataConnection {
             writer.close();
         } catch (IOException e) {
         }
+
+        clearRecordData();
     }
 
-    private void getHeaderFile(String actionTemplate) {
+    private void getHeaderFile(String actionTemplate, String sensor) {
         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
-        SharedPreferences pref = context.getSharedPreferences("pref", MODE_PRIVATE);
 
         StringBuilder header = new StringBuilder();
 
         header.append("Record Sensor Data Application\n");
+        header.append("SubjectId: " + pref.getInt("id", 1) + "\n");
         header.append("Name: " + pref.getString("name", null) + "\n");
         header.append("Age: " + pref.getString("age", null) + "\n");
         header.append("Job: " + pref.getString("job", null) + "\n");
         header.append("Device version: " + pref.getString("device", null) + "\n");
         header.append("Gender: " + pref.getString("gender", null) + "\n");
+        header.append("Height: " + pref.getInt("height", 0) + " " + pref.getString("heightUnit", null) + "\n");
         header.append("Template: " + actionTemplate + "\n");
-        header.append("Time: " + timeLineData.get(0)[0] + "\n");
+        header.append("Sensor type record: " + sensor + "\n");
+        header.append("Time: " + sdf.format(new Date()) + "\n");
         header.append("\n================================\n\n");
+        header.append("@DATA");
 
         headerFile = header.toString();
+    }
+
+    private void clearRecordData() {
+        timeLineData = new ArrayList<>();
     }
 }

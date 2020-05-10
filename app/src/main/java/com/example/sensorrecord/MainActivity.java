@@ -38,8 +38,10 @@ public class MainActivity extends AppCompatActivity
     public final static short TYPE_GYROSCOPE = Sensor.TYPE_GYROSCOPE;
     public final static short TYPE_MAGNETIC = Sensor.TYPE_MAGNETIC_FIELD;
     public final static short TYPE_GRAVITY = Sensor.TYPE_GRAVITY;
+    public final static short TYPE_ORIENTATION = Sensor.TYPE_ORIENTATION;
     //App flags
     public static Boolean dataRecordStarted;
+    public static Boolean heightUnitSpinnerTouched;
     public static Boolean androidVersionSpinner;
     public static Boolean subCreated;
     public NavigationView navigationView;
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity
 
         dataRecordStarted = false;
         androidVersionSpinner = false;
+        heightUnitSpinnerTouched = false;
         subCreated = false;
     }
 

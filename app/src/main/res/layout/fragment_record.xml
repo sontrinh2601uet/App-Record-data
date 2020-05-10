@@ -35,50 +35,12 @@
             android:textSize="17sp" />
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/template_of_action"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/frequency_layout"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="@string/record_template_action"
-        android:textSize="17sp" />
-
-    <LinearLayout
-        android:id="@+id/vehicle_selection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/template_of_action"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="@string/record_vehicle_action"
-            android:textSize="17sp">
-
-        </TextView>
-
-        <Spinner
-            android:id="@+id/spinner_vehicle"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginStart="5dp"
-            android:entries="@array/vehicle"
-            tools:listitem="@layout/support_simple_spinner_dropdown_item" />
-    </LinearLayout>
-
-
     <LinearLayout
         android:id="@+id/set_max_time_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/vehicle_selection"
-        android:layout_marginTop="25dp"
+        android:layout_below="@+id/frequency_layout"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -108,10 +70,79 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/template_of_action_button_layout"
-        android:layout_width="wrap_content"
+        android:id="@+id/sensor_select"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/set_max_time_layout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="@string/sensor_type_title"
+            android:textSize="17sp" />
+
+        <RadioGroup
+            android:id="@+id/sensor_type_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/nav_accelerometer" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_gyroscope" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_orientation" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sensor_type_all" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/vehicle_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sensor_select"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/record_vehicle_action"
+            android:textSize="17sp">
+
+        </TextView>
+
+        <Spinner
+            android:id="@+id/spinner_vehicle"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="5dp"
+            android:entries="@array/vehicle"
+            tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/template_of_action_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/vehicle_selection"
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 
@@ -119,7 +150,7 @@
             android:id="@+id/template_of_action_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/startButton"
@@ -136,7 +167,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/start_element_height"
         android:layout_below="@id/startButton"
-        android:textColor="@color/graphZ"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/graphZ" />
 
 </RelativeLayout>

@@ -71,6 +71,8 @@ public class UserInfoFragment extends Fragment implements View.OnClickListener {
         TextView age = (TextView) view.findViewById(R.id.subInfo_value_age);
         TextView job = (TextView) view.findViewById(R.id.subInfo_value_job);
         TextView gender = (TextView) view.findViewById(R.id.subInfo_value_gender);
+        TextView height = (TextView) view.findViewById(R.id.subInfo_value_height);
+        TextView heightUnit = (TextView) view.findViewById(R.id.subInfo_value_height_unit);
         TextView device = (TextView) view.findViewById(R.id.subInfo_value_device);
         TextView deviceName = (TextView) view.findViewById(R.id.subInfo_value_name_device);
 
@@ -79,6 +81,8 @@ public class UserInfoFragment extends Fragment implements View.OnClickListener {
         age.setText(pref.getString("age", null));
         job.setText(pref.getString("job", null));
         gender.setText(pref.getString("gender", null));
+        height.setText(pref.getInt("height", 0) + " ");
+        heightUnit.setText(pref.getString("heightUnit", null));
         device.setText(Build.VERSION.SDK);
         deviceName.setText(Build.MODEL);
 
