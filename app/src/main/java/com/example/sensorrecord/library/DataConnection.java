@@ -3,6 +3,7 @@ package com.example.sensorrecord.library;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.SQLException;
+import android.os.Build;
 import android.os.Environment;
 
 import com.example.sensorrecord.fragment.RecordFragment;
@@ -22,11 +23,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class DataConnection {
     private static final String TAG = "DATA CONNECTION";
-    private static final String ACCELEROMETER = "accelerometer";
-    private static final String GYROSCOPE = "gyroscope";
-    private static final String MAGNETIC = "magnetic";
-    private static final String GRAVITY = "gravity";
-    private static final String ORIENTATION = "orientation";
+    private static final String ACCELEROMETER = "Accelerometer";
+    private static final String GYROSCOPE = "Gyroscope";
+    private static final String MAGNETIC = "Magnetometer";
+    private static final String GRAVITY = "Gravity";
+    private static final String ORIENTATION = "Orientation";
 
     private String headerFile;
     static ArrayList<float[]> timeLineData = new ArrayList<>();
@@ -89,14 +90,15 @@ public class DataConnection {
                 + pref.getInt("id", 1) + "_"
                 + trialTimes;
 
-        exportData(name, folderData);
+        exportData(null, name, folderData);
     }
 
-    private void exportData(String name, File folderData) {
+    private void exportData(String sensor, String name, File folderData) {
         File accData = new File(folderData, name + ".txt");
         int startPos = 0;
+        String typeSensor = RecordFragment.currentTypeSensor;
 
-        switch (name) {
+        switch (typeSensor) {
             case ACCELEROMETER:
                 startPos = 1;
                 break;
@@ -137,19 +139,18 @@ public class DataConnection {
 
         StringBuilder header = new StringBuilder();
 
-        header.append("Record Sensor Data Application\n");
         header.append("SubjectId: " + pref.getInt("id", 1) + "\n");
         header.append("Name: " + pref.getString("name", null) + "\n");
         header.append("Age: " + pref.getString("age", null) + "\n");
         header.append("Job: " + pref.getString("job", null) + "\n");
-        header.append("Device version: " + pref.getString("device", null) + "\n");
+        header.append("Device version: " + Build.VERSION.SDK_INT + "\n");
         header.append("Gender: " + pref.getString("gender", null) + "\n");
         header.append("Height: " + pref.getInt("height", 0) + " " + pref.getString("heightUnit", null) + "\n");
-        header.append("Template: " + actionTemplate + "\n");
+        header.append("Template action: " + actionTemplate + "\n");
         header.append("Sensor type record: " + sensor + "\n");
         header.append("Time: " + sdf.format(new Date()) + "\n");
         header.append("\n================================\n\n");
-        header.append("@DATA");
+        header.append("@DATA\n");
 
         headerFile = header.toString();
     }

@@ -122,6 +122,7 @@ public class NewFragment extends Fragment implements View.OnClickListener, Adapt
         editor.putString("gender", gender);
         editor.putInt("height", height);
         editor.putString("heightUnit", heightUnit);
+        editor.remove("trial_no");
 
         editor.commit();
     }
