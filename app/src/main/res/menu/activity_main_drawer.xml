@@ -16,6 +16,17 @@
         </menu>
     </item>
 
+    <item android:title="Detected Behavior">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_detected"
+                    android:icon="@android:drawable/ic_menu_info_details"
+                    android:title="@string/nav_detected" />
+            </group>
+        </menu>
+    </item>
+
     <item android:title="Sensors">
         <menu>
             <group android:checkableBehavior="single">

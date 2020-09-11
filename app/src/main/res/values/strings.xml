@@ -24,6 +24,7 @@
     <string name="nav_new">New</string>
     <string name="nav_start">Start Record</string>
     <string name="nav_save">Save &amp; Quit</string>
+    <string name="nav_detected">Behavior Detection</string>
     <string name="nav_raw">Raw Data</string>
     <string name="nav_accelerometer">Accelerometer</string>
     <string name="nav_magnetometer">Magnetometer</string>

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.example.sensorrecord.fragment.DetectFragment;
 import com.example.sensorrecord.fragment.NewFragment;
 import com.example.sensorrecord.fragment.RawFragment;
 import com.example.sensorrecord.fragment.RecordFragment;
@@ -127,6 +128,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_start:
                 addFragment(new RecordFragment(), true);
+                break;
+            case R.id.nav_detected:
+                addFragment(new DetectFragment(), true);
                 break;
             case R.id.nav_raw:
                 addFragment(new RawFragment(), true);
